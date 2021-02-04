@@ -17,7 +17,8 @@ tic
 % Read In Calibration and Raw Data
 %data = xlsread(dataFile);
 calib=xlsread('CX1_1027 - CX1_1027 - A - 20190726_210802.csv');
-data=xlsread('Inner_Tower - CX1_2612 - AC - 20201101_015108.csv');
+data=xlsread('Inner_Tower - CX1_2612 - AC - 20201030_055108.csv');%Noisy Data
+%data=xlsread('Inner_Tower - CX1_2612 - AC - 20201101_015108.csv');%Calm Data
 %data=xlsread('Outer_Tower - CX1_2613 - AC - 20201101_022108.csv');
 
 %DA Update 12/21/20
@@ -84,22 +85,22 @@ save('PSD.mat','Fs','PSDx','PSDy','PSDz','freqx','freqy','freqz');
 % ylabel("Position (m)")
 % title("Z Displacement vs Time")
 % 
-% figure()
-% plot(freqx,PSDx)
-% xlabel("Freq (Hz)")
-% ylabel('|P1(f)|')
-% title("Power Specturm Density for Position X")
-% figure()
-% plot(freqy,PSDy)
-% xlabel("Freq (Hz)")
-% ylabel('|P1(f)|')
-% title("Power Specturm Density for Position Y")
-% figure()
-% hold on;
-% plot(freqz,PSDz)
-% xlabel("Freq (Hz)")
-% ylabel('|P1(f)|')
-% title("Power Specturm Density for Position Z")
+figure()
+plot(freqx,PSDx)
+xlabel("Freq (Hz)")
+ylabel('|P1(f)|')
+title("Power Specturm Density for Position X")
+figure()
+plot(freqy,PSDy)
+xlabel("Freq (Hz)")
+ylabel('|P1(f)|')
+title("Power Specturm Density for Position Y")
+figure()
+hold on;
+plot(freqz,PSDz)
+xlabel("Freq (Hz)")
+ylabel('|P1(f)|')
+title("Power Specturm Density for Position Z")
 toc
 %DA Update 12/21/20
 %Functions used in Script
