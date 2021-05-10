@@ -1,4 +1,4 @@
-clc; clear; close all;
+clc; clear;
 format long g 
 tic
 % scriptFolder = pwd;
@@ -17,9 +17,10 @@ tic
 % Read In Calibration and Raw Data
 %data = xlsread(dataFile);
 calib=xlsread('CX1_1027 - CX1_1027 - A - 20190726_210802.csv');
-data=xlsread('Inner_Tower - CX1_2612 - AC - 20201030_055108.csv');%Noisy Data
-%data=xlsread('Inner_Tower - CX1_2612 - AC - 20201101_015108.csv');%Calm Data
-%data=xlsread('Outer_Tower - CX1_2613 - AC - 20201101_022108.csv');
+%data=xlsread('Inner_Tower - CX1_2612 - AC - 20201030_055108.csv');%Noisy Data
+% data=xlsread('Inner_Tower - CX1_2612 - AC - 20210416_102111.csv');%Recent Data
+data=xlsread('Mars_Platform - CX1_2613 - AC - 20210416_102100.csv');%Platform Data
+% data=xlsread('Inner_Tower - CX1_2612 - AC - 20201101_015108.csv');%Calm Data
 
 %DA Update 12/21/20
 %Raw Data to Clean Data, Aceel to Disp
@@ -36,16 +37,16 @@ data=xlsread('Inner_Tower - CX1_2612 - AC - 20201030_055108.csv');%Noisy Data
 % DA update 12/8/20
 % Conversion from Time Domain to Freq Domain
 Fs=1/mean(diff(time)); %Sampling Frequency, Nyquist=Sampling/2
-[PSDx, freqx]=PSD2(Fs, dispX, calib_dispX);
-[PSDy, freqy]=PSD2(Fs, dispY, calib_dispY);
-[PSDz, freqz]=PSD2(Fs, dispZ, calib_dispZ);
+[PSDx, freqx]=PSD2(Fs, dispX/125e-6, calib_dispX/125e-6); %disp in arcsec
+[PSDy, freqy]=PSD2(Fs, dispY/125e-6, calib_dispY/125e-6); %disp in arcsec
+[PSDz, freqz]=PSD2(Fs, dispZ/125e-6, calib_dispZ/125e-6); %disp in arcsec
 %Power of origional Displacement
 fprintf("Standard Dev of Origional Disp x: %1.8f microns\n",sqrt(std(dispX).^2-std(calib_dispX).^2)*1e6)
 fprintf("Standard Dev of Origional Disp y: %1.8f microns\n",sqrt(std(dispY).^2-std(calib_dispY).^2)*1e6)
 fprintf("Standard Dev of Origional Disp z: %1.8f microns\n",sqrt(std(dispZ).^2-std(calib_dispZ).^2)*1e6)
 %DA update 12/21/20
 %Save PSD in each dimension to a matfile
-save('PSD.mat','Fs','PSDx','PSDy','PSDz','freqx','freqy','freqz');
+save('PSDPlatform.mat','Fs','PSDx','PSDy','PSDz','freqx','freqy','freqz');
 %%% Plotting Section %%%
 % figure()
 % hold on; grid on;
@@ -88,19 +89,19 @@ save('PSD.mat','Fs','PSDx','PSDy','PSDz','freqx','freqy','freqz');
 figure()
 plot(freqx,PSDx)
 xlabel("Freq (Hz)")
-ylabel('|P1(f)|')
+ylabel('|P1(f)|^2')
 title("Power Specturm Density for Position X")
 figure()
 plot(freqy,PSDy)
 xlabel("Freq (Hz)")
-ylabel('|P1(f)|')
+ylabel('|P1(f)|^2')
 title("Power Specturm Density for Position Y")
-figure()
-hold on;
-plot(freqz,PSDz)
-xlabel("Freq (Hz)")
-ylabel('|P1(f)|')
-title("Power Specturm Density for Position Z")
+% figure()
+% hold on;
+% plot(freqz,PSDz)
+% xlabel("Freq (Hz)")
+% ylabel('|P1(f)|')
+% title("Power Specturm Density for Position Z")
 toc
 %DA Update 12/21/20
 %Functions used in Script
@@ -122,7 +123,7 @@ function [disp,calib_disp] = accel2disp(accel,time,calib,calib_t)
     calib_disp = Calib_X0-Calib_X; %Find actual Accel Data
     Disp_X0 = cumtrapz(time, cumtrapz(time, accel));
     Disp_X = sgolayfilt(Disp_X0,order,width);
-    disp=Disp_X0-Disp_X; %Same process for actual data
+    disp=2*(Disp_X0-Disp_X); %Same process for actual data
 end
 function [PSD, freq] = PSD2(Fs, disp, calib_disp)
     %FFT transform for Calib Data
