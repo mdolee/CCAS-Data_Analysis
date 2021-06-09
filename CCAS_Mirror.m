@@ -234,7 +234,7 @@ for i=1:len-1
     centroidy(i,:)=(centroidy(i,:)-mean(centroidy(i,:)))*Pix2arc;
 %     plot(time,centroidy) %X Motion
 end
-% xlabel("Time (Sec)");ylabel("Y Position (Arcsec)");title("Y Motion vs Time")
+% xlabel("Time (Sec)");ylabel("Y Position (Arcsec)");title("Y Motion vc   s Time")
 % figure()
 % hold on;
 % for i=1:len-1
